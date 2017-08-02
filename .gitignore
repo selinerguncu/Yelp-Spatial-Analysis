@@ -1,0 +1,4 @@
+*.pyc
+/shapefiles
+/data
+.DS_Store
