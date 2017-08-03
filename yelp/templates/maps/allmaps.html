@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+
+  <div class="four wide column">
+    <div class="ui bottom attached tab segment active">
+      <div class="ui list">
+        <div class="item">
+          <i class="university icon"></i>
+          <div class="content">
+            <strong>Business:</strong> {{ mapParameters["business"] }}
+          </div>
+        </div>
+        <div class="item">
+          <i class="world icon"></i>
+          <div class="content">
+            <strong>City:</strong> {{ mapParameters["city"] }}
+          </div>
+        </div>
+        {% if mapParameters["zipcode"] %}
+          <div class="item">
+            <i class="marker icon"></i>
+            <div class="content">
+              <strong>Zipcode:</strong> {{ mapParameters["zipcode"] }}
+            </div>
+          </div>
+        {% endif %}
+        <div class="item">
+          <i class="dollar icon"></i>
+          <div class="content">
+            <strong>Price:</strong> {{ mapParameters["price"] }}
+          </div>
+        </div>
+        <div class="item">
+          <i class="heart icon"></i>
+          <div class="content">
+            <strong>Rating:</strong> {{ mapParameters["rating"] }}
+          </div>
+        </div>
+        <br>
+        <div class="item">
+          <i class="map icon"></i>
+          <div class="content">
+            <a href="{{ url_for('maps') }}">See Another Map</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="four wide column">
+    <div class="ui bottom attached tab segment active">
+      <div class="ui list">
+        <div class="item"><strong>Total # of Businesses shown in:</strong>
+          <div class="ui bulleted list">
+            <div class="item">Marker Map</div>
+            <div class="item">Cluster Map</div>
+            <div class="item">Heat Map</div>
+          </div>
+          <br><strong>24</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="four wide column">
+    <div class="ui bottom attached tab segment active">
+      <div class="ui list">
+        <div class="content">
+          <div class="item"><strong>For the Rating Map</strong>:
+            <div class="ui bulleted list">
+              <div class="item"><i>Yellow:</i> Ratings between 0 and 1</div>
+              <div class="item"><i>Green:</i> Ratings between 1 and 2</div>
+              <div class="item"><i>Red:</i> Ratings between 2 and 3</div>
+              <div class="item"><i>Blue:</i> Ratings between 3 and 4</div>
+              <div class="item"><i>Purple:</i> Ratings between 4 and 5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="four wide column">
+    <div class="ui bottom attached tab segment active">
+      <div class="ui list">
+        <div class="content">
+          <div class="item"><strong>For the Price Map</strong>:
+            <div class="ui bulleted list">
+              <div class="item"><i>Yellow:</i> $</div>
+              <div class="item"><i>Green:</i> $$</div>
+              <div class="item"><i>Red:</i> $$$</div>
+              <div class="item"><i>Blue:</i> $$$$</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sixteen wide stretched column">
+
+    <div class="ui bottom attached tab segment active">
+      <div class="ui top attached tabular menu">
+        <a class="item active" data-tab="marker">Marker Map</a>
+        <a class="item" data-tab="cluster">Cluster Map</a>
+        <a class="item" data-tab="heat">Heat Map</a>
+        <a class="item" data-tab="rating">Rating Map</a>
+        <a class="item" data-tab="price">Price Map</a>
+      </div>
+      <div class="ui bottom attached tab segment active" data-tab="marker">
+        <iframe src="{{ url_for('static', filename='foliumMarkers.html') }}" width="100%" height="500px" border="0px"></iframe>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="cluster">
+        <iframe src="{{ url_for('static', filename='foliumCluster.html') }}" width="100%" height="500px" border="0px"></iframe>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="heat">
+        <iframe src="{{ url_for('static', filename='foliumHeatmap.html') }}" width="100%" height="500px" border="0px"></iframe>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="rating">
+        <iframe src="{{ url_for('static', filename='circleMapRating.html') }}" width="100%" height="500px" border="0px"></iframe>
+      </div>
+      <div class="ui bottom attached tab segment" data-tab="price">
+        <iframe src="{{ url_for('static', filename='circleMapPrice.html') }}" width="100%" height="500px" border="0px"></iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+      $(document).ready(function(){
+          $('.menu .item').tab();
+      });
+  </script>
+
+{% endblock %}
+
+
+
+
+
+
+
