@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% set activeTopNav = "simulation" %}
+{% set activeSubNav = "play" %}
+
+{% block content %}
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  {% include 'simulation/nav.html' %}
+
+  <div class="thirteen wide stretched column main-content">
+    <div class="ui tab attached segment active" data-tab="play">...play...</div>
+  </div>
+
+{% endblock %}
