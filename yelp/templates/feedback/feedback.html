@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% set page = "feedbackPage" %}
+
+{% block content %}
+
+  <div class="sixteen wide stretched column ">
+    <div class="ui bottom attached tab segment active">
+      <form action="{{ url_for('feedbackSent') }}" method=POST>
+
+            {% if errorComment %}<p class=error><strong>Oops..</strong> {{ errorComment }}{% endif %}
+            {% if errorAbout %}<p class=error><strong>Oops..</strong> {{ errorAbout }}{% endif %}
+        <div class="column">
+          <div class="ui form">
+            <div class="field">
+              <div class="grouped fields">
+                <label for="fruit">About:</label>
+                <div class="field">
+                  <div class="ui radio checkbox">
+                    <input type="radio" name="about" value="concept" tabindex="0" class="hidden">
+                    <label>Conceptualization</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui radio checkbox">
+                    <input type="radio" name="about" value="analysis" tabindex="0" class="hidden">
+                    <label>Analysis</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui radio checkbox">
+                    <input type="radio" name="about" value="simulation" tabindex="0" class="hidden">
+                    <label>Simulation</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui radio checkbox">
+                    <input type="radio" name="about" value="code" tabindex="0" class="hidden">
+                    <label>Code</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui radio checkbox">
+                    <label>Other</label>
+                    <input type="radio" name="about" value="other" tabindex="0" class="hidden">
+                  </div>
+                  <div class="four fields">
+                    <div class="field">
+                      <div class="field">
+                        <input type="text" name="otherAbout" placeholder="Other">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="two fields">
+              <div class="field">
+                <div class="field">
+                  <label>Your Comments</label>
+                  <textarea rows="9" name="comment"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="four fields">
+              <div class="field">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="Name.."><br>
+              </div>
+              <div class="field">
+                <label>E-mail</label>
+                <input type="email" name="email" placeholder="E-mail.."><br>
+              </div>
+            </div>
+            <div class="ui field">
+              <button class="ui submit button primary" type=submit>Send</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      $('.ui.radio.checkbox').checkbox();
+    });
+  </script>
+
+{% endblock %}
