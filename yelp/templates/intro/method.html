@@ -1,46 +1,13 @@
 {% extends "layout.html" %}
-{% block css %}
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='range.css') }}">
-{% endblock %}
+{% set activeTopNav = "intro" %}
+{% set activeSubNav = "method" %}
+
 {% block content %}
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <div class="ui secondary menu">
-    <a class="item active" href="/intro">Intro</a>
-    <a class="item" href="/maps">Maps</a>
-    <a class="item" href="/simulation">Simulation</a>
-    <a class="item" href="/analysis">Analysis</a>
-  </div>
+  {% include 'intro/nav.html' %}
 
-  <div class="ui tab segment active">
-    <div class="ui grid">
-      <div class="three wide column">
-        <div class="ui top attached tabular menu vertical">
-          <a class="item" href="/intro/summary" data-tab="summary">Summary</a>
-          <a class="item" href="/intro/concept" data-tab="concept">Conceptual Framework</a>
-          <a class="item active" href="/intro/method" data-tab="method">Methodology</a>
-          <a class="item" data-tab="findings">Findings</a>
-        </div>
-      </div>
-      <div class="thirteen wide stretched column">
-        <div class="ui bottom attached tab segment" href="/intro/summary" data-tab="summary">{% include 'login.html' %}</div>
-        <div class="ui bottom attached tab segment" href="/intro/concept" data-tab="concept">...Conceptualization...</div>
-        <div class="ui bottom attached tab segment active" href="/intro/method" data-tab="method">...Methodology...</div>
-        <div class="ui bottom attached tab segment" data-tab="findings">...Findings...</div>
-      </div>
-    </div>
+  <div class="thirteen wide stretched column main-content">
+    <div class="ui tab attached segment active" data-tab="method">...Methodology...</div>
   </div>
-  <script>
-      $(document).ready(function(){
-          $('.menu .item').tab();
-          $('.ui.rating').rating();
-          $('.ui.embed').embed();
-      });
-  </script>
 
 {% endblock %}
-
-
-
-
-
-
