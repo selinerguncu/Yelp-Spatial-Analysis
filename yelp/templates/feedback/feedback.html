@@ -7,8 +7,8 @@
     <div class="ui bottom attached tab segment active">
       <form action="{{ url_for('feedbackSent') }}" method=POST>
 
-            {% if errorComment %}<p class=error><strong>Oops..</strong> {{ errorComment }}{% endif %}
-            {% if errorAbout %}<p class=error><strong>Oops..</strong> {{ errorAbout }}{% endif %}
+            {% if errorComment %}<div class=error><strong>Oops..</strong> {{ errorComment }}</div><br>{% endif %}
+            {% if errorAbout %}<div class=error><strong>Oops..</strong> {{ errorAbout }}</div><br>{% endif %}
         <div class="column">
           <div class="ui form">
             <div class="field">
@@ -57,17 +57,17 @@
               <div class="field">
                 <div class="field">
                   <label>Your Comments</label>
-                  <textarea rows="9" name="comment"></textarea>
+                  <textarea rows="5" name="comment"></textarea>
                 </div>
               </div>
             </div>
             <div class="four fields">
               <div class="field">
-                <label>Name</label>
+                <label>Name <i style="font-weight: 400;"> (Optional)</i></label>
                 <input type="text" name="name" placeholder="Name.."><br>
               </div>
               <div class="field">
-                <label>E-mail</label>
+                <label>E-mail <i style="font-weight: 400;"> (Optional)</i></label>
                 <input type="email" name="email" placeholder="E-mail.."><br>
               </div>
             </div>
