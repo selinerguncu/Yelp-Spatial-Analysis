@@ -7,7 +7,20 @@
   {% include 'intro/nav.html' %}
 
   <div class="thirteen wide stretched column main-content">
-    <div class="ui tab attached segment active" data-tab="method">...Methodology...</div>
+    <div class="ui tab attached segment active" data-tab="method">
+      <h3>Data</h3>
+      <p>In order to investigate my propositions, I composed a comprehensive dataset extracted from web, including Yelp, Google Earth and U.S. Census Bureau. </p>
+      <p>The dataset is composed of business variables (industry, price level, average rating, number of reviews, location variables including city, zip-code, latitude and longitude), as well as location variables (number of businesses, population, average income and average housing price for a given location). </p>
+
+      <h3>Model </h3>
+      <p>We propose a dynamic model of an oligopoly industry characterized by spatial competition between multi-store retailers. Firms compete in prices and decide where to open or close stores depending on demand conditions and the number of competitors at different locations, and on location-specific private-information shocks.</p>
+      <p>The parameters of the school lunch program are, in turn, dependent on the school’s district, which is described by parameters indicating the central tendency and variability of school-lunch parameters across schools in the district. This chain of dependencies among parameters again exemplifies a hierarchical model.</p>
+
+      <h3>Estimation</h3>
+      <p>The central goal of Bayesian estimation, and a major goal of data analysis generally, is deriving the most credible parameter values for a chosen descriptive model, because the parameter values are meaningful in the context of the model. Bayesian estimation provides an entire distribution of credibility over the space of parameter values, not merely a single “best” value. The distribution precisely captures our uncertainty about the parameter estimate. The essence of Bayesian estimation is to formally describe how uncertainty changes when new data are taken into account.</p>
+      <p>One of the primary applications of hierarchical models is describing data from individuals within groups. A hierarchical model may have parameters for each individual that describe each individual’s tendencies, and the distribution of individual parameters within a group is modeled by a higherlevel distribution with its own parameters that describe the tendency of the group. The individuallevel and group-level parameters are estimated simultaneously. Therefore, the estimate of each individual-level parameter is informed by all the other individuals via the estimate of the group-level distribution, and the group-level parameters are more precisely estimated by the jointly constrained individual-level parameters. The hierarchical approach is better than treating each individual independently because the data from different individuals meaningfully inform one another. And the hierarchical approach is better than collapsing all the individual data together because collapsed data may blur or obscure trends within each individual.</p>
+
+    </div>
   </div>
 
 {% endblock %}
