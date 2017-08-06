@@ -105,69 +105,223 @@ def mapsSetup():
   conn = sqlite.connect("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpdb.sqlite")
   cur = conn.cursor()
   cur.execute('''SELECT city FROM Business''',)
-  citiesTuples = cur.fetchall()
-  cities = set(citiesTuples)
+  cityTuples = cur.fetchall()
+  wrongCitiesSet = set(cityTuples)
+  wrongCities = list(wrongCitiesSet)
+  # print(wrongCities)
+  # citiesCorrect = stats.cleanCities(wrongCities)
+  # print(citiesCorrect)
 
   cur.execute('''SELECT zip_code FROM Business''',)
   zipcodesTuples = cur.fetchall()
   zipcodes = set(zipcodesTuples)
 
-  cur.execute('''SELECT city, zip_code FROM Business''',)
-  cityZipcodeTuples = cur.fetchall()
+  # cur.execute('''SELECT city, zip_code FROM Business''',)
+  # cityZipcodeTuples = cur.fetchall()
 
-  cityZipcodeTupleSets = set(cityZipcodeTuples)
-  cityZipcodeDict={}
-  for city,zip_code in cityZipcodeTupleSets:
-      if not city in cityZipcodeDict.keys():
-        cityZipcodeDict[city] = [zip_code]
+  # cityZipcodeTupleSets = set(cityZipcodeTuples)
+  # cityZipcodeDict={}
+  # for city,zip_code in cityZipcodeTupleSets:
+  #     if not city in cityZipcodeDict.keys():
+  #       cityZipcodeDict[city] = [zip_code]
+  #     else:
+  #       cityZipcodeDict[city].append(zip_code)
+
+  rawDataDict = cleanData.importRawData()
+  finalData = cleanData.cleanCityNames(rawDataDict)
+  # finalData = cleanData.addNeigbirhoodSF(finalData)
+  finalData = cleanData.addCensusData(finalData)
+  finalData = cleanData.correctCityZipcodes(finalData)
+
+  for row in finalData:
+    if row['city'] == 'San Francisco':
+      if row['zipcode'] in ['94109','94102','94103','94107','94158','94108','94105','94111','94133']:
+        finalData.append({'city': 'San Francisco - Downtown',
+                          'zipcode': row['zipcode'],
+                          'price': row['price'],
+                          'rating': row['rating'],
+                          'review_count': row['review_count'],
+                          'latitude': row['latitude'],
+                          'longitude': row['longitude'],
+                          'query_latitude': row['query_latitude'],
+                          'query_longitude': row['query_longitude'],
+                          'query_category': row['query_category'],
+                          'query_price': row['query_price'],
+                          'county': row['county'],
+                          'population': row['population'],
+                          'area': row['area']})
       else:
-        cityZipcodeDict[city].append(zip_code)
-  return render_template('/maps/setup.html', cities=sorted(cities), zipcodes=sorted(zipcodes), cityZipcodeDict=cityZipcodeDict)
+        finalData.append({'city': 'San Francisco - Outer',
+                          'zipcode': row['zipcode'],
+                          'price': row['price'],
+                          'rating': row['rating'],
+                          'review_count': row['review_count'],
+                          'latitude': row['latitude'],
+                          'longitude': row['longitude'],
+                          'query_latitude': row['query_latitude'],
+                          'query_longitude': row['query_longitude'],
+                          'query_category': row['query_category'],
+                          'query_price': row['query_price'],
+                          'county': row['county'],
+                          'population': row['population'],
+                          'area': row['area']})
+
+  cities = []
+  for row in finalData:
+    cities.append(row['city'])
+
+  citiesSet = set(cities)
+
+  # zipcodes = []
+  # for row in finalData:
+  #   zipcodes.append(row['zipcode'])
+
+  # zipcodesSet = set(zipcodes)
+
+  # cityZipcodeDict = {}
+  # for row in finalData:
+  #   if not row['city'] in cityZipcodeDict.keys():
+  #     cityZipcodeDict[row['city']]= [row['zipcode']]
+  #   else:
+  #     cityZipcodeDict[row['city']].append(row['zipcode'])
+
+  return render_template('/maps/setup.html', cities=sorted(citiesSet))
 
 @app.route('/maps/allmaps', methods=['GET', 'POST'])
 def mapsAllmaps():
-  mapParameters = {'city' : request.form['city'],
-                         'price' : request.form['price'],
-                         'rating' : request.form['rating'] }
+  if request.method == 'POST':
+    conn = sqlite.connect("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpdb.sqlite")
+    cur = conn.cursor()
+    cur.execute('''SELECT city FROM Business''',)
+    cityTuples = cur.fetchall()
+    wrongCitiesSet = set(cityTuples)
+    wrongCities = list(wrongCitiesSet)
+    # print(wrongCities)
+    # citiesCorrect = stats.cleanCities(wrongCities)
+    # print(citiesCorrect)
+
+    cur.execute('''SELECT zip_code FROM Business''',)
+    zipcodesTuples = cur.fetchall()
+    zipcodes = set(zipcodesTuples)
+
+    # cur.execute('''SELECT city, zip_code FROM Business''',)
+    # cityZipcodeTuples = cur.fetchall()
+
+    # cityZipcodeTupleSets = set(cityZipcodeTuples)
+    # cityZipcodeDict={}
+    # for city,zip_code in cityZipcodeTupleSets:
+    #     if not city in cityZipcodeDict.keys():
+    #       cityZipcodeDict[city] = [zip_code]
+    #     else:
+    #       cityZipcodeDict[city].append(zip_code)
+
+    rawDataDict = cleanData.importRawData()
+    finalData = cleanData.cleanCityNames(rawDataDict)
+    # finalData = cleanData.addNeigbirhoodSF(finalData)
+    finalData = cleanData.addCensusData(finalData)
+    finalData = cleanData.correctCityZipcodes(finalData)
+
+    for row in finalData:
+      if row['city'] == 'San Francisco':
+        if row['zipcode'] in ['94109','94102','94103','94107','94158','94108','94105','94111','94133']:
+          finalData.append({'city': 'San Francisco - Downtown',
+                            'zipcode': row['zipcode'],
+                            'price': row['price'],
+                            'rating': row['rating'],
+                            'review_count': row['review_count'],
+                            'latitude': row['latitude'],
+                            'longitude': row['longitude'],
+                            'query_latitude': row['query_latitude'],
+                            'query_longitude': row['query_longitude'],
+                            'query_category': row['query_category'],
+                            'query_price': row['query_price'],
+                            'county': row['county'],
+                            'population': row['population'],
+                            'area': row['area']})
+        else:
+          finalData.append({'city': 'San Francisco - Outer',
+                            'zipcode': row['zipcode'],
+                            'price': row['price'],
+                            'rating': row['rating'],
+                            'review_count': row['review_count'],
+                            'latitude': row['latitude'],
+                            'longitude': row['longitude'],
+                            'query_latitude': row['query_latitude'],
+                            'query_longitude': row['query_longitude'],
+                            'query_category': row['query_category'],
+                            'query_price': row['query_price'],
+                            'county': row['county'],
+                            'population': row['population'],
+                            'area': row['area']})
+
+    cities = []
+    for row in finalData:
+      cities.append(row['city'])
+
+    citiesSet = set(cities)
+    #errors:
+    error = None
+    print(request.form)
+    if not 'business' in request.form.keys():
+      error = 'errorBusiness'
+      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorBusiness = 'errorBusiness')
+    if request.form['city'] == '0':
+      error = 'errorCity'
+      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorCity = 'errorCity')
+    if not 'price' in request.form.keys():
+      error = 'errorPrice'
+      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorPrice = 'errorPrice')
+    if request.form['rating'] == '0':
+      error = 'errorRating'
+      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorRating = 'errorRating')
+
+  mapParameters = {}
+  mapParameters = {'business': request.form['business'],
+                   'city': request.form['city'],
+                   'price': request.form['price'],
+                   'rating': request.form['rating']}
 
   if request.form["business"] == 'reastaurants':
-    mapParameters['business'] = 'Reastaurants'
+    mapParameters['businessLabel'] = 'Reastaurants'
   elif request.form["business"] == 'coffee':
-    mapParameters['business'] = 'Coffee'
+    mapParameters['businessLabel'] = 'Coffee'
   elif request.form["business"] == 'bars':
-    mapParameters['business'] = 'Bars'
+    mapParameters['businessLabel'] = 'Bars'
   elif request.form["business"] == 'giftshop':
-    mapParameters['business'] = 'Giftshops'
+    mapParameters['businessLabel'] = 'Giftshops'
   elif request.form["business"] == 'beautysvc':
-    mapParameters['business'] = 'Beauty and Spas'
+    mapParameters['businessLabel'] = 'Beauty and Spas'
   elif request.form["business"] == 'nightlife':
-    mapParameters['business'] = 'Nightlife'
+    mapParameters['businessLabel'] = 'Nightlife'
   elif request.form["business"] == 'food':
-    mapParameters['business'] = 'Food'
+    mapParameters['businessLabel'] = 'Food'
 
   if 'zipcode' in request.form.keys():
     mapParameters['zipcode'] = request.form['zipcode']
 
   print(mapParameters)
-  coordinates = foliumMaps.organizeData(mapParameters)
+
+  numberOfBusinesses = stats.numberOfBusinesses(request.form["business"], mapParameters['city'])
+  coordinates = organizeData.dataForMaps(mapParameters)
   foliumMaps.makeMarkerMap(coordinates)
   foliumMaps.makeClusterMap(coordinates)
   foliumMaps.makeHeatmapMap(coordinates)
   circleMap.makeCircleMapRating(coordinates)
   circleMap.makeCircleMapPrice(coordinates)
 
-  return render_template('/maps/allmaps.html', mapParameters=mapParameters)
+
+  return render_template('/maps/allmaps.html', mapParameters=mapParameters, numberOfBusinesses=numberOfBusinesses)
 
 @app.route('/simulation', methods=['GET', 'POST'])
 def simulation():
   if request.method == 'POST':
     return redirect(url_for('simulationPlay'))
   else:
-    return redirect(url_for('simulationIntro'))
+    return redirect(url_for('simulationGames'))
 
-@app.route('/simulation/intro')
-def simulationIntro():
-  return render_template('/simulation/intro.html')
+@app.route('/simulation/games')
+def simulationGames():
+  return render_template('/simulation/games.html')
 
 @app.route('/simulation/play', methods=['GET', 'POST'])
 def simulationPlay():
