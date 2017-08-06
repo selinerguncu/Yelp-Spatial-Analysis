@@ -1,0 +1,84 @@
+<!doctype html>
+<head>
+  {% block head %}
+  <title>{% block title %}{% endblock %}Yelp Project</title>
+
+  <link rel=stylesheet type=text/css href="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+  <link rel=stylesheet type=text/css href="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/icon.min.css">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+  {% block css %}{% endblock %}
+
+  <script type=text/javascript src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type=text/javascript src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+  <script type=text/javascript src="{{ url_for('static', filename='jquery.address-1.5.min.js') }}"></script>
+
+
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% endblock %}
+</head>
+
+
+<body class="site">
+  <div class="ui container">
+    <div class="ui large menu">
+      <a class="header item" href="{{ url_for('intro') }}">Exploring How Spatial Compatition Moderates the Effects of Price on Customer Ratings</a>
+      <div class="right menu">
+        <a class="item" href="https://github.com/selinerguncu/Yelp-Spatial-Analysis">GitHub</a>
+        <a class="item" href="{{ url_for('feedback') }}">Feedback</a>
+      </div>
+    </div>
+
+    {% if page != 'feedbackPage' %}
+      <div class="ui" id="content">
+
+        <div class="ui secondary pointing menu">
+          <a class="item {% if activeTopNav == 'intro' %}active{% endif %}" href="/intro">Theory</a>
+          <a class="item {% if activeTopNav == 'analysis' %}active{% endif %}" href="/analysis">Analysis</a>
+          <a class="item {% if activeTopNav == 'maps' %}active{% endif %}" href="/maps">Maps</a>
+          <a class="item {% if activeTopNav == 'simulation' %}active{% endif %}" href="/simulation">Simulation</a>
+        </div>
+    {% endif %}
+      <div class="ui tab active">
+        <div class="ui grid">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ui grid centered" id="footer">
+      <div class="ui"><br>
+        <p>by <a href="http://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
+        {% block footer %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function(){
+      $('.menu .item').tab();
+      $('.ui.rating').rating();
+      $('.ui.embed').embed();
+    });
+  </script>
+
+</body>
+</html>
+
+
+{# {% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Index</h1>
+    <p class="important">
+      Welcome to my awesome homepage.
+    </p>
+{% endblock %} #}
