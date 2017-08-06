@@ -359,20 +359,15 @@ def feedback():
 
 @app.route('/feedbacksent', methods=['GET', 'POST'])
 def feedbackSent():
-  errorComment = None
-  errorAbout = None
   print(request.form)
   if request.method == 'POST':
     if str(request.form["comment"]) == '':
-      errorComment = 'So, what is your comment?'
-      return render_template('/feedback/feedback.html' , errorComment=errorComment)
+      return render_template('/feedback/feedback.html' , errorComment=True)
     elif not "about" in request.form.keys():
       if str(request.form["otherAbout"]) == '':
-        errorAbout = 'What is your comment about?'
-        return render_template('/feedback/feedback.html' , errorAbout=errorAbout)
+        return render_template('/feedback/feedback.html' , errorAbout=True)
     if request.form["about"] == 'other' and str(request.form["otherAbout"]) == '':
-      errorAbout = 'What is your comment about?'
-      return render_template('/feedback/feedback.html' , errorAbout=errorAbout)
+      return render_template('/feedback/feedback.html' , errorAbout=True)
 
 
   conn = sqlite.connect("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/feedbackdb.sqlite")
