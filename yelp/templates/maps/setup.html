@@ -126,8 +126,9 @@
             <div class="content">
               <div class="header">City</div>
               <select class="ui compact selection dropdown" name="city">
+                <option value="0">Select City</option>
                 {% for city in cities %}
-                  <option value={{ city[0] }}>{{ city[0] }}</option>
+                  <option value="{{ city }}">{{ city }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -152,8 +153,11 @@
   <script type="text/javascript" src="{{ url_for('static', filename='range.js') }}"></script>
   <script>
     var zipcodes = {{ cityZipcodeDict|tojson() }}
-    console.log(zipcodes)
     $(document).ready(function(){
+      var $citySelect = $('select[name=city]');
+      $citySelect.addClass('disabled');
+
+      $citySelect.attr("disabled", "disabled");
       $('#smooth').range({
         min: 0,
         max: 5,
@@ -165,20 +169,22 @@
           $('input[name=rating]').val(value);
         }
       });
-      $('select[name=city]').change(function(event){
-        var city = $('select[name=city]').val();
-        $('select[name=zipcode]').html('');
-        if(zipcodes[city] && zipcodes[city].length > 4){
-          $('div.zipcode-block').show()
-          zipcodes[city].forEach(function(zipcode){
-            $('select[name=zipcode]').append(`<option value="${zipcode}">${zipcode}</option>`)
-          })
+
+      $('input[name=business]').change(function(event){
+        var val = $(this).val();
+        $citySelect.removeAttr("disabled")
+        $citySelect.removeClass('disabled');
+        $citySelect.val(0);
+        if (val === 'beautysvc' || val === 'restaurants') {
+          $('select[name=city] option[value="San Francisco - Downtown"]').show()
+          $('select[name=city] option[value="San Francisco - Outer"]').show()
+          $('select[name=city] option[value="San Francisco"]').hide()
         } else {
-          $('div.zipcode-block').hide()
+          $('select[name=city] option[value="San Francisco - Downtown"]').hide()
+          $('select[name=city] option[value="San Francisco - Outer"]').hide()
+          $('select[name=city] option[value="San Francisco"]').show()
         }
-
       });
-
     });
   </script>
 {% endblock %}
