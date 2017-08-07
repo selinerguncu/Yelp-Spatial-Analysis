@@ -3,6 +3,13 @@
 {% set activeSubNav = "play" %}
 
 {% block content %}
+
+  <div class="sixteen wide stretched column simulation">
+    <div class="ui bottom attached tab segment active">
+      <p>...</p>
+    </div>
+  </div>
+
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% include 'simulation/nav.html' %}
 

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% set activeTopNav = "simulation" %}
+{% set activeSubNav = "games" %}
+
+{% block content %}
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  {% include 'simulation/nav.html' %}
+
+  <div class="thirteen wide stretched column main-content">
+    <div class="ui tab attached segment active" data-tab="games">
+      <h2>Empirical Games of Market Entry</h2>
+      <p>This section quantifies the interplay among (i) firms’ market entry decisions and market competition, (ii) customers’ overall satisfaction with a service (based on the inferred price judgements), and (iii) differentiation variables such as spatial differentiation among firms.</p>
+      <p>We propose a dynamic model of an oligopoly industry characterized by spatial competition between multi-store retailers. Firms compete in prices and decide where to open or close stores depending on demand conditions and the number of competitors at different locations, and on location-specific private-information shocks.</p>
+      <p>In this model, firms compete in prices and decide where to open or close stores depending on the location profile of competitors, demand conditions, and location-specific private-information shocks.</p>
+
+      <div class="five wide stretched column centered column">
+        <div class="ui bottom attached tab segment active">
+          <img class="ui centered image" src="{{ url_for('static', filename='YelpMarketSimulation@2x.png') }}">
+        </div>
+      </div>
+      <p align="center"><i>Possible Scenarios</i></p>
+    </div>
+  </div>
+
+{% endblock %}
