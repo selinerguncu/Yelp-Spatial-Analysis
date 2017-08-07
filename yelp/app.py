@@ -2,6 +2,7 @@ import os
 import sqlite3 as sqlite
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 from maps import foliumMaps, circleMap
+from analysis import stats, cleanData
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -29,41 +30,17 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 #This allows the rows to be treated as if they were dictionaries instead of tuples.
 
 def connect_db():
-  """Connects to the specific database."""
-  # rv = sqlite.connect(app.config['DATABASE'])
   conn = sqlite.connect(DB_PATH)
   conn.row_factory = sqlite.Row
   cur = conn.cursor()
   return cur
 
 
-# def get_db():
-#   """Opens a new database connection if there is none yet for the
-#   current application context.
-#   """
-#   if not hasattr(g, 'sqlite_db'):
-#     g.sqlite_db = connect_db()
-#   return g.sqlite_db
-
-# @app.teardown_appcontext
-# def close_db(error):
-#   """Closes the database again at the end of the request."""
-#   if hasattr(g, 'sqlite_db'):
-#     g.sqlite_db.close()
-
-
-# def init_db():
-#   db = get_db()
-#   with app.open_resource('schema.sql', mode='r') as f:
-#     db.cursor().executescript(f.read())
-#   db.commit()
-
-# @app.cli.command('initdb')
-# def initdb_command():
-#   """Initializes the database."""
-#   init_db()
-#   print('Initialized the database.')
-
+def getFinalData():
+  dataCorrectedCityZipcode = cleanData.correctCityZipcodes(cleanData.cleanCityNames(cleanData.importRawData()))
+  dataAddedCensusData = cleanData.addCensusData(dataCorrectedCityZipcode)
+  finalData = cleanData.addDowntownOuterSF(dataAddedCensusData)
+  return finalData
 
 #summary is the main template
 @app.route('/')
