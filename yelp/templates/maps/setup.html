@@ -2,6 +2,10 @@
 
 {% block css %}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='range.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+{% endblock %}
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
 {% endblock %}
 {% block content %}
   <!-- {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %} -->
@@ -85,19 +89,21 @@
             <div class="content">
               {# <i class="heart icon"></i> #}
               <div class="header">Rating</div>
-              <div class="ui segment slider">
+              <div id="starRating"></div>
+              <input type="hidden" name="rating" value="0">
+              <!-- <div class="ui segment slider">
                 <div class="ui range" id="smooth"></div>
                 <br>
                 <div style="text-align: center"><span id="ratingValue"></span></div>
                 <input type="hidden" name="rating" value="0">
-              </div>
+              </div> -->
               {% if errorRating %}
                 <div class="ui negative message">
                   <i class="close icon"></i>
                   <div class="header">
                     Please select a rating level.
                   </div>
-                  <p>Price level is necessary for the Price map.</p>
+                  <p>Rating level is necessary for the Price map.</p>
                 </div>
               {% endif %}
             </div>
@@ -149,7 +155,28 @@
             </div>
             <div class="item">
               <img class="ui image" src="{{ url_for('static', filename='city3.png') }}">
-              <div name='cityTooltip' class="content">
+              <div class="content">
+                <div class="header">Region</div>
+                <div class="ui basic buttons">
+                  <div id="city_1" class="ui disabled cityButton button">Bay Area</div>
+                  <div id="city_2" class="ui disabled cityButton button">Peninsula</div>
+                  <div id="city_3" class="ui disabled cityButton button">East Bay</div>
+                  <div id="city_4" class="ui disabled cityButton button">North Bay</div>
+                  <div id="city_5" class="ui disabled cityButton button">San Francisco</div>
+                  <div id="city_6" class="ui disabled cityButton button">Downtown SF</div>
+                  <div id="city_7" class="ui disabled cityButton button">Outer SF</div>
+                  <input type="hidden" name="region" value="">
+                </div>
+                {% if errorCity %}
+                  <div class="ui negative message">
+                    <i class="close icon"></i>
+                    <div class="header">
+                      Please select a city.
+                    </div>
+                    <p>City is necessary for all maps.</p>
+                  </div>
+                {% endif %}
+                <!--
                 <div data-tooltip="You need to select a business category first." data-position="bottom center">
                   <div class="header">City</div>
                   <select class="ui compact selection dropdown" name="city">
@@ -158,16 +185,8 @@
                       <option value="{{ city }}">{{ city }}</option>
                     {% endfor %}
                   </select>
-                  {% if errorCity %}
-                    <div class="ui negative message">
-                      <i class="close icon"></i>
-                      <div class="header">
-                        Please select a city.
-                      </div>
-                      <p>City is necessary for all maps.</p>
-                    </div>
-                  {% endif %}
                 </div>
+                -->
               </div>
             </div>
 
@@ -190,6 +209,19 @@
   <script type="text/javascript" src="{{ url_for('static', filename='range.js') }}"></script>
   <script>
     $(document).ready(function(){
+
+      $("#starRating").rateYo({
+        numStars: 5,
+        rating: 0,
+        halfStar: true,
+        precision: 5,
+        starWidth: "20px",
+        onChange: function(rating){
+          $('input[name=rating]').val(rating);
+        }
+      });
+
+
       var $citySelect = $('select[name=city]');
       $citySelect.addClass('disabled');
 
@@ -206,20 +238,45 @@
         }
       });
 
+      $('.cityButton').click(function(event){
+        $('.cityButton').removeClass('active');
+        $(this).addClass('active');
+        $('input[name=region]').val($(this).text());
+      });
+
       $('input[name=business]').change(function(event){
         var val = $(this).val();
-        $citySelect.removeAttr("disabled")
-        $citySelect.removeClass('disabled');
-        $citySelect.val(0);
-        if (val === 'beautysvc' || val === 'restaurants') {
-          $('select[name=city] option[value="San Francisco - Downtown"]').show()
-          $('select[name=city] option[value="San Francisco - Outer"]').show()
-          $('select[name=city] option[value="San Francisco"]').hide()
-        } else {
-          $('select[name=city] option[value="San Francisco - Downtown"]').hide()
-          $('select[name=city] option[value="San Francisco - Outer"]').hide()
-          $('select[name=city] option[value="San Francisco"]').show()
+        $('.cityButton').removeClass('disabled');
+        // $citySelect.removeAttr("disabled")
+        // $citySelect.removeClass('disabled');
+        // $citySelect.val(0);
+        switch (val) {
+          case 'restaurants':
+          case 'beautysvc':
+            $('.cityButton').show().removeClass('active');
+            $('#city_1, #city_5').hide();
+            $('input[name=region]').val('');
+            break
+          case 'food':
+            $('.cityButton').show().removeClass('active');
+            $('#city_1, #city_6, #city_7').hide();
+            $('input[name=region]').val('');
+            break
+          default:
+            $('.cityButton').hide().removeClass('active');
+            $('#city_1').show().addClass('active');
+            $('input[name=region]').val('Bay Area');
         }
+
+        // if (val === 'beautysvc' || val === 'restaurants') {
+        //   $('select[name=city] option[value="San Francisco - Downtown"]').show()
+        //   $('select[name=city] option[value="San Francisco - Outer"]').show()
+        //   $('select[name=city] option[value="San Francisco"]').hide()
+        // } else {
+        //   $('select[name=city] option[value="San Francisco - Downtown"]').hide()
+        //   $('select[name=city] option[value="San Francisco - Outer"]').hide()
+        //   $('select[name=city] option[value="San Francisco"]').show()
+        // }
       });
 
       $('.message .close')
@@ -235,19 +292,9 @@
 {% endblock %}
 
 
+<!-- <div class="ui red empty circular label"></div> -->
 
 
 
 
 
-<div class="ui input error">
-  <input type="text" placeholder="Search...">
-</div>
-
-<div class="ui negative message">
-  <i class="close icon"></i>
-  <div class="header">
-    Please select a price level.
-  </div>
-  <p>Price level is necessary for the Rating map.
-</p></div>

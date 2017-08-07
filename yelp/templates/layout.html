@@ -11,7 +11,9 @@
 
   <script type=text/javascript src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type=text/javascript src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
-  <script type=text/javascript src="{{ url_for('static', filename='jquery.address-1.5.min.js') }}"></script>
+  {% block script %}{% endblock %}
+
+  {# <script type=text/javascript src="{{ url_for('static', filename='jquery.address-1.5.min.js') }}"></script> #}
 
 
   {% for message in get_flashed_messages() %}
