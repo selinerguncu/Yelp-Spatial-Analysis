@@ -39,7 +39,8 @@ def connect_db():
 def getFinalData():
   dataCorrectedCityZipcode = cleanData.correctCityZipcodes(cleanData.cleanCityNames(cleanData.importRawData()))
   dataAddedCensusData = cleanData.addCensusData(dataCorrectedCityZipcode)
-  finalData = cleanData.addDowntownOuterSF(dataAddedCensusData)
+  dataRegionsAddedToSF = cleanData.addDowntownOuterSF(dataAddedCensusData)
+  finalData = cleanData.addRegion(dataRegionsAddedToSF)
   return finalData
 
 #summary is the main template
@@ -78,36 +79,41 @@ def mapsSetup():
     print(request.form)
     return redirect(url_for('mapsAllmaps'))
 
-  cities = []
-  for row in getFinalData():
-    cities.append(row['city'])
-  citiesSet = set(cities)
+  # cities = []
+  # for row in getFinalData():
+  #   cities.append(row['city'])
+  # citiesSet = set(cities)
 
-  return render_template('/maps/setup.html', cities=sorted(citiesSet))
+  return render_template('/maps/setup.html')
 
 @app.route('/maps/allmaps', methods=['GET', 'POST'])
 def mapsAllmaps():
   if request.method == 'POST':
     finalData = getFinalData()
-
-    cities = []
-    for row in finalData:
-      cities.append(row['city'])
-    citiesSet = set(cities)
+    errorBusiness=errorCity=errorPrice=errorRating=False
+    # cities = []
+    # for row in finalData:
+    #   cities.append(row['city'])
+    # citiesSet = set(cities)
 
     #validate the user input:
     if not 'business' in request.form.keys():
-      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorBusiness = True)
-    if request.form['city'] == '0':
-      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorCity = True)
+      errorBusiness = True
+      # return render_template('/maps/setup.html', errorBusiness = True)
+    if request.form['region'] == '':
+      errorCity = True
+      # return render_template('/maps/setup.html', errorCity = True)
     if not 'price' in request.form.keys():
-      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorPrice = True)
+      errorPrice = True
+      # return render_template('/maps/setup.html', errorPrice = True)
     if request.form['rating'] == '0':
-      return render_template('/maps/setup.html', cities=sorted(citiesSet), errorRating = True)
+      errorRating = True
+
+    return render_template('/maps/setup.html', errorRating=errorRating, errorPrice=errorPrice, errorCity=errorCity, errorBusiness=errorBusiness)
 
   mapParameters = {}
   mapParameters = {'business': request.form['business'],
-                   'city': request.form['city'],
+                   'region': request.form['region'],
                    'price': request.form['price'],
                    'rating': request.form['rating']}
 
@@ -126,12 +132,12 @@ def mapsAllmaps():
   elif request.form["business"] == 'food':
     mapParameters['businessLabel'] = 'Food'
 
-  if 'zipcode' in request.form.keys():
-    mapParameters['zipcode'] = request.form['zipcode']
+  # if 'zipcode' in request.form.keys():
+  #   mapParameters['zipcode'] = request.form['zipcode']
 
   print(mapParameters)
 
-  numberOfBusinesses = stats.numberOfBusinesses(request.form["business"], mapParameters['city'])
+  numberOfBusinesses = stats.numberOfBusinesses(request.form["business"], mapParameters['region'])
   coordinates = organizeData.dataForMaps(mapParameters)
   foliumMaps.makeMarkerMap(coordinates)
   foliumMaps.makeClusterMap(coordinates)
