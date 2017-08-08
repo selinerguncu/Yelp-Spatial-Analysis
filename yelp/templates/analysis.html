@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block css %}
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='range.css') }}">
+{% endblock %}
+{% block content %}
+  <div class="ui secondary menu">
+    <a class="item" href="/intro">Intro</a>
+    <a class="item" href="/maps">Maps</a>
+    <a class="item" href="/simulation">Simulation</a>
+    <a class="item active" href="/analysis">Analysis</a>
+  </div>
+
+  <div class="ui tab segment active">
+  {# <div class="ui tab segment"> #}
+    <div class="ui grid">
+      <div class="three wide column">
+        <div class="ui top attached tabular menu vertical">
+          <a class="item active" data-tab="rawdata">Raw Data</a>
+          <a class="item" data-tab="outline">Analysis Outline</a>
+          <a class="item" data-tab="estimation">Estimation</a>
+          <a class="item" data-tab="findings">Findings</a>
+          <a class="item" data-tab="technicalities">Technicalities</a>
+        </div>
+      </div>
+
+      <div class="thirteen wide stretched column">
+        <div class="ui bottom attached tab segment active" data-tab="rawdata">
+          jhjhjhjhjhjh
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="outline">
+          ououououououou
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="estimation">
+          kakakakkakaka
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="findings">
+          mzmzmzmzmzmmz
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="technicalities">
+          fafafafafafafa
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      $('.menu .item').tab();
+      $('.ui.rating').rating();
+      $('.ui.embed').embed();
+    });
+  </script>
+
+{% endblock %}
