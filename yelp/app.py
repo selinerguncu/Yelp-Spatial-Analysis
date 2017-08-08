@@ -1,8 +1,9 @@
 import os
 import sqlite3 as sqlite
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
-from maps import foliumMaps, circleMap
+from maps import organizeData, foliumMaps, circleMap
 from analysis import stats, cleanData
+
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -137,14 +138,18 @@ def mapsAllmaps():
 
   print(mapParameters)
 
-  numberOfBusinesses = stats.numberOfBusinesses(request.form["business"], mapParameters['region'])
-  coordinates = organizeData.dataForMaps(mapParameters)
-  foliumMaps.makeMarkerMap(coordinates)
-  foliumMaps.makeClusterMap(coordinates)
-  foliumMaps.makeHeatmapMap(coordinates)
-  circleMap.makeCircleMapRating(coordinates)
-  circleMap.makeCircleMapPrice(coordinates)
+  numberOfBusinesses = stats.numberOfBusinesses(mapParameters["business"], mapParameters['region'])
 
+  print(numberOfBusinesses)
+
+  coordinatesForFoliumMaps = organizeData.dataForFoliumMaps(mapParameters)
+  coordinatesForCircleMapsRating = organizeData.dataForCircleMapsRating(mapParameters)
+  coordinatesForCircleMapsPrice = organizeData.dataForCircleMapsPrice(mapParameters)
+  foliumMaps.makeMarkerMap(coordinatesForFoliumMaps)
+  foliumMaps.makeClusterMap(coordinatesForFoliumMaps)
+  foliumMaps.makeHeatmapMap(coordinatesForFoliumMaps)
+  circleMap.makeCircleMapRating(coordinatesForCircleMapsRating)
+  circleMap.makeCircleMapPrice(coordinatesForCircleMapsPrice)
 
   return render_template('/maps/allmaps.html', mapParameters=mapParameters, numberOfBusinesses=numberOfBusinesses)
 
