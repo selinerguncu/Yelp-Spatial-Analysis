@@ -74,7 +74,7 @@
               </div>
             </div>
             {% if errorBusiness %}
-              <div class="ui negative message">
+              <div class="ui negative message maps-setup">
                 <i class="close icon"></i>
                 <div class="header">
                   Please select a business category.
@@ -98,7 +98,7 @@
                   <input type="hidden" name="rating" value="0">
                 </div> -->
                 {% if errorRating %}
-                  <div class="ui negative message">
+                  <div class="ui negative message maps-setup">
                     <i class="close icon"></i>
                     <div class="header">
                       Please select a rating level.
@@ -143,7 +143,7 @@
                   </div>
                 </div>
                 {% if errorPrice %}
-                  <div class="ui negative message">
+                  <div class="ui negative message maps-setup">
                     <i class="close icon"></i>
                     <div class="header">
                       Please select a price level.
@@ -169,12 +169,12 @@
                   <input type="hidden" name="region" value="">
                 </div>
                 {% if errorCity %}
-                  <div class="ui negative message">
+                  <div class="ui negative message maps-setup">
                     <i class="close icon"></i>
                     <div class="header">
-                      Please select a city.
+                      Please select a region.
                     </div>
-                    <p>City is necessary for all maps.</p>
+                    <p>Region is necessary for all maps.</p>
                   </div>
                 {% endif %}
                 <!--
