@@ -2,3 +2,5 @@
 /shapefiles
 /data
 .DS_Store
+/yelp.egg-info
+/yelp/yelpdb
