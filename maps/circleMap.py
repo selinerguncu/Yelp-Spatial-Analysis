@@ -11,40 +11,41 @@ import numpy as np
 def makeCircleMapRating(coordinates):
   meanLat = np.mean(coordinates["latitude"])
   meanLon = np.mean(coordinates["longitude"])
-  circleMapRating = pygmaps.maps(meanLat, meanLon, 10)
+  # circleMapRating = pygmaps.maps(meanLat, meanLon, 8)
+  circleMapRating = pygmaps.maps(38.231761, -122.896364, 9)
   i = 0
   k = 0
   j = 0
   l = 0
   for business in range(len(coordinates)):
-    if np.mean(coordinates["rating"]) == 0.5 or np.mean(coordinates["rating"]) == 1: #yellow
-      if i < 100:
-        circleMapRating.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#F8E71C')
-        i += 1
+    if coordinates["rating"][business] == 0.5 or coordinates["rating"][business] == 1: #yellow
+      # if i < 100:
+      circleMapRating.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#F8E71C')
+        # i += 1
 
   for business in range(len(coordinates)):
-    if np.mean(coordinates["rating"]) == 1.5 or np.mean(coordinates["rating"]) == 2: #green
-      if k < 100:
-        circleMapRating.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#50E3C2')
-        k += 1
+    if coordinates["rating"][business] == 1.5 or coordinates["rating"][business] == 2: #green
+      # if k < 100:
+      circleMapRating.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#50E3C2')
+        # k += 1
 
   for business in range(len(coordinates)):
-    if np.mean(coordinates["rating"]) == 2.5 or np.mean(coordinates["rating"]) == 3: #red
-      if j < 100:
-        circleMapRating.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#FF0000')
-        j += 1
+    if coordinates["rating"][business] == 2.5 or coordinates["rating"][business] == 3: #red
+      # if j < 100:
+      circleMapRating.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#FF0000')
+        # j += 1
 
   for business in range(len(coordinates)):
-    if np.mean(coordinates["rating"]) == 3.5 or np.mean(coordinates["rating"]) == 4: #blue
-      if l < 100:
-        circleMapRating.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#1015E0')
-        l += 1
+    if coordinates["rating"][business] == 3.5 or coordinates["rating"][business] == 4: #blue
+      # if l < 100:
+      circleMapRating.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#1015E0')
+        # l += 1
 
   for business in range(len(coordinates)):
-    if np.mean(coordinates["rating"]) == 4.5 or np.mean(coordinates["rating"]) == 5: #purple
-      if l < 100:
-        circleMapRating.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#BD10E0')
-        l += 1
+    if coordinates["rating"][business] == 4.5 or coordinates["rating"][business] == 5: #purple
+      # if l < 100:
+      circleMapRating.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#BD10E0')
+        # l += 1
 
   return circleMapRating.draw('/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/circleMapRating.html')
 
@@ -52,34 +53,35 @@ def makeCircleMapRating(coordinates):
 def makeCircleMapPrice(coordinates):
   meanLat = np.mean(coordinates["latitude"])
   meanLon = np.mean(coordinates["longitude"])
-  circleMapPrice = pygmaps.maps(meanLat, meanLon, 10)
+  # circleMapPrice = pygmaps.maps(meanLat, meanLon, 8)
+  circleMapPrice = pygmaps.maps(38.231761, -122.896364, 9)
   i = 0
   k = 0
   j = 0
   l = 0
   for business in range(len(coordinates)):
-    if np.mean(int(coordinates["query_price"])) == 1: #yellow
-      if i < 100:
-        circleMapPrice.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#FFFF00')
-        i += 1
+    if int(coordinates["query_price"][business]) == 1: #yellow
+      # if i < 100:
+      circleMapPrice.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#FFFF00')
+        # i += 1
 
   for business in range(len(coordinates)):
-    if np.mean(int(coordinates["query_price"])) == 2: #green
-      if k < 100:
-        circleMapPrice.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#008000')
-        k += 1
+    if int(coordinates["query_price"][business]) == 2: #green
+      # if k < 100:
+      circleMapPrice.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#008000')
+        # k += 1
 
   for business in range(len(coordinates)):
-    if np.mean(int(coordinates["query_price"])) == 3: #red
-      if j < 100:
-        circleMapPrice.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#FF0000')
-        j += 1
+    if int(coordinates["query_price"][business]) == 3: #red
+      # if j < 100:
+      circleMapPrice.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#FF0000')
+        # j += 1
 
   for business in range(len(coordinates)):
-    if np.mean(int(coordinates["query_price"])) == 4: #blue
-      if l < 100:
-        circleMapPrice.addradpoint(coordinates["latitude"], coordinates["longitude"], 10, '#1015E0')
-        l += 1
+    if int(coordinates["query_price"][business]) == 4: #blue
+      # if l < 100:
+      circleMapPrice.addradpoint(coordinates["latitude"][business], coordinates["longitude"][business], 200, '#1015E0')
+        # l += 1
 
   return circleMapPrice.draw('/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/circleMapPrice.html')
 # DB_PATH = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpdb.sqlite"
