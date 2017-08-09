@@ -9,7 +9,7 @@ import sys
 import pandas as pd
 
 #extract data from yelp DB and clean it:
-DB_PATH = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpdb.sqlite"
+DB_PATH = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpCleanDB.sqlite"
 
 conn = sqlite.connect(DB_PATH)
 
@@ -20,19 +20,57 @@ conn = sqlite.connect(DB_PATH)
 #######################################
 def organizeData(mapParameters):
   business = str(mapParameters['business'])
-  city = str(mapParameters['city'])
+  region = str(mapParameters['region'])
   price = str(mapParameters['price'])
   rating = float(mapParameters['rating'])
 
-  if 'zipcode' in mapParameters.keys():
-    zipcode = str(mapParameters['zipcode'])
-    sql = "SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count FROM Business WHERE query_category = '%s' AND city = '%s' AND zip_code = '%s' AND price = '%s' AND rating = '%r'" % (business, city, zipcode, price, rating)
-    coordinates = pd.read_sql_query(sql, conn)
-  else:
-    sql = "SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count FROM Business WHERE query_category = '%s' AND city = '%s' AND price = '%s' AND rating = '%r'" % (business, city, price, rating)
-    coordinates = pd.read_sql_query(sql, conn)
-    print('here')
+  print('mapParameters', mapParameters)
 
+  # if 'zipcode' in mapParameters.keys():
+  #   zipcode = str(mapParameters['zipcode'])
+  #   sql = "SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count FROM Business WHERE query_category = '%s' AND city = '%s' AND zip_code = '%s' AND price = '%s' AND rating = '%r'" % (business, city, zipcode, price, rating)
+  #   coordinates = pd.read_sql_query(sql, conn)
+  # else:
+  #   sql = "SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count FROM Business WHERE query_category = '%s' AND city = '%s' AND price = '%s' AND rating = '%r'" % (business, city, price, rating)
+  #   coordinates = pd.read_sql_query(sql, conn)
+  #   print('here')
+
+  sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+  FROM CleanBusinessData
+  WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%r''' % (business, price, rating, region)
+
+
+  if region == 'Bay Area':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' ''' % (business, price, rating, 'San Francisco')
+  elif region == 'Peninsula':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' AND city != '%s' AND city != '%s' ''' % (business, price, rating, 'San Francisco', 'San Francisco - Downtown', 'San Francisco - Outer')
+  elif region == 'San Francisco':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = ?''' % (business, price, rating, 'San Francisco')
+  elif region == 'Downtown SF':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Downtown')
+  elif region == 'Outer SF':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Outer')
+  elif region == 'East Bay':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'eastBay')
+  elif region == 'North Bay':
+    sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zip_code, price, rating, review_count, region
+      FROM CleanBusinessData
+      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'northBay')
+
+
+  coordinates = pd.read_sql_query(sql, conn)
 
   if len(coordinates) <= 1860:
     for i in range(len(coordinates)):
@@ -70,23 +108,23 @@ def makeMarkerMap(coordinates):
 
   #Initialize map
   mapa = folium.Map(location=[meanlat, meanlon],
-                    tiles='OpenStreetMap', zoom_start=11)
+                    tiles='Cartodb Positron', zoom_start=10)
   # add markers
   for i in range(len(coordinates)):
       # create popup on click
-      html="""
-      Rating: {}<br>
-      Popularity: {}<br>
-      Price: {}<br>
-      """
-      html = html.format(coordinates["rating"][i],\
-                 coordinates["review_count"][i],\
-                 coordinates["price"][i])
-      iframe = folium.IFrame(html=html, width=100, height=10) #element yok
-      popup = folium.Popup(iframe, max_width=2650)
+      # html="""
+      # Rating: {}<br>
+      # Popularity: {}<br>
+      # Price: {}<br>
+      # """
+      # html = html.format(coordinates["rating"][i],\
+      #            coordinates["review_count"][i],\
+      #            coordinates["price"][i])
+      # iframe = folium.IFrame(html=html, width=100, height=10) #element yok
+      # popup = folium.Popup(iframe, max_width=2650)
 
       #  add marker to map
-      folium.Marker(tuple([coordinates['latitude'],coordinates['longitude']]), popup=None,).add_to(mapa)
+      folium.Marker(tuple([coordinates['latitude'][i],coordinates['longitude'][i]]), popup=None,).add_to(mapa)
 
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumMarkers.html")
 
@@ -99,11 +137,10 @@ def makeClusterMap(coordinates):
   meanlon = np.mean(coordinates['longitude'])
   # initialize map
   mapa = folium.Map(location=[meanlat, meanlon],
-                    tiles='Cartodb Positron', zoom_start=13)
-
+                    tiles='Cartodb Positron', zoom_start=10)
+  for i in range(len(coordinates)):
   # add marker clusters
-  mapa.add_child(MarkerCluster(locations=coordinates, popups=coordinates))
-
+    mapa.add_child(MarkerCluster(tuple([coordinates['latitude'][i],coordinates['longitude'][i]])))
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumCluster.html")
 
   #######################################
@@ -115,10 +152,11 @@ def makeHeatmapMap(coordinates):
   meanlon = np.mean(coordinates['longitude'])
   # initialize map
   mapa = folium.Map(location=[meanlat, meanlon],
-                    tiles='OpenStreetMap', zoom_start=13)
-
+                    tiles='Cartodb Positron', zoom_start=10)  #tiles='OpenStreetMap'
+  # for i in range(len(coordinates)):
   # add heat
   mapa.add_child(HeatMap(coordinates))
+  # mapa.add_child(HeatMap((tuple([coordinates['latitude'][i],coordinates['longitude'][i]]))))
 
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumHeatmap.html")
 
