@@ -90,27 +90,20 @@ def mapsSetup():
 @app.route('/maps/allmaps', methods=['GET', 'POST'])
 def mapsAllmaps():
   if request.method == 'POST':
-    finalData = getFinalData()
-    errorBusiness=errorCity=errorPrice=errorRating=False
-    # cities = []
-    # for row in finalData:
-    #   cities.append(row['city'])
-    # citiesSet = set(cities)
+    if not 'business' in request.form.keys() or request.form['region'] == '' or not 'price' in request.form.keys() or request.form['rating'] == '0':
+      errorBusiness=errorCity=errorPrice=errorRating=False
 
-    #validate the user input:
-    if not 'business' in request.form.keys():
-      errorBusiness = True
-      # return render_template('/maps/setup.html', errorBusiness = True)
-    if request.form['region'] == '':
-      errorCity = True
-      # return render_template('/maps/setup.html', errorCity = True)
-    if not 'price' in request.form.keys():
-      errorPrice = True
-      # return render_template('/maps/setup.html', errorPrice = True)
-    if request.form['rating'] == '0':
-      errorRating = True
+      #validate the user input:
+      if not 'business' in request.form.keys():
+        errorBusiness = True
+      if request.form['region'] == '':
+        errorCity = True
+      if not 'price' in request.form.keys():
+        errorPrice = True
+      if request.form['rating'] == '0':
+        errorRating = True
 
-    return render_template('/maps/setup.html', errorRating=errorRating, errorPrice=errorPrice, errorCity=errorCity, errorBusiness=errorBusiness)
+      return render_template('/maps/setup.html', errorRating=errorRating, errorPrice=errorPrice, errorCity=errorCity, errorBusiness=errorBusiness)
 
   mapParameters = {}
   mapParameters = {'business': request.form['business'],
@@ -118,16 +111,16 @@ def mapsAllmaps():
                    'price': request.form['price'],
                    'rating': request.form['rating']}
 
-  if request.form["business"] == 'reastaurants':
-    mapParameters['businessLabel'] = 'Reastaurants'
+  if request.form["business"] == 'restaurants':
+    mapParameters['businessLabel'] = 'Restaurants'
   elif request.form["business"] == 'coffee':
-    mapParameters['businessLabel'] = 'Coffee'
+    mapParameters['businessLabel'] = 'Coffee & Tea'
   elif request.form["business"] == 'bars':
     mapParameters['businessLabel'] = 'Bars'
   elif request.form["business"] == 'giftshop':
     mapParameters['businessLabel'] = 'Giftshops'
   elif request.form["business"] == 'beautysvc':
-    mapParameters['businessLabel'] = 'Beauty and Spas'
+    mapParameters['businessLabel'] = 'Beauty & Spas'
   elif request.form["business"] == 'nightlife':
     mapParameters['businessLabel'] = 'Nightlife'
   elif request.form["business"] == 'food':
