@@ -1,0 +1,62 @@
+body            { background: #fafafa; padding-top: 1rem; }
+/*a, h1, h2       { color: #377ba8; }*/
+/*h1, h2          { font-family: 'Georgia', serif; margin: 0; }*/
+h1              { border-bottom: 2px solid #eee; }
+/*h2              { font-size: 1.2em; }*/
+p               { font-size: 1rem; margin-left: 3em; margin-right: 3em;}
+h2              { margin-left: 1.7em; margin-right: 3em; margin-top: 1em !important; margin-bottom: 1em;}
+/*h2              { margin: 1em 3em 1em 1.7em;}*/
+h3              { margin-left: 2.2em; margin-right: 3em;}
+
+.page           { margin: 5em auto; width: 300em; padding: 0.8em; background: white; }
+.entries        { list-style: none; margin: 0; padding: 0; }
+.entries li     { margin: 0.8em 1.2em; }
+.entries li h2  { margin-left: -1em; }
+.add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
+.add-entry dl   { font-weight: bold; }
+.metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
+                  margin-bottom: 1em; background: #fafafa; }
+.flash          { background: #cee5F5; padding: 0.5em;
+                  border: 1px solid #aacbe2; }
+/*.error          { background: #f0d6d6; padding: 0.5em; }*/
+.slider         { width: 300px; }
+.wide.column    { padding-left: 3rem; }
+
+.secondary.menu { margin-left: 2em; padding-top: 2rem; }
+
+.main-content   { padding-left: 0 !important; }
+
+.main-content .ui.tab
+                { border: 1px solid #D4D4D5 !important; border-radius: 0 .28571429rem .28571429rem 0 !important}
+
+.vertical-menu  { padding-right: 0 !important; width: 100% !important; z-index: 1; }
+
+.vertical-menu .ui.vertical.menu
+                { width: 100% !important; }
+
+.vertical-menu.maps-intro
+                { width: 100% !important; }
+
+img.centered.image
+                { max-width: 100% !important;}
+
+.ui.bottom.attached.tab.segment.active
+                { margin-right: 3em }
+
+
+.five.wide.stretched.column.centered.column
+                { margin-right: 3em }
+
+div.column.simulation
+                { margin-left: 14.4em }
+
+.ui.negative.message.maps-setup
+                { margin-right: 50em; }
+
+/*i.half.star.icon   { margin-right: : 0.5em !important; }*/
+i.star.icon   { margin: 0; }
+
+i.icon          { padding-right: 0 !important; }
+
+.bottom.attached.equal-height
+                { height: 160px !important;}
