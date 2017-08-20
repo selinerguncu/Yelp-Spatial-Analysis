@@ -101,6 +101,7 @@ def makeMarkerMap(coordinates):
   # # get center of map
   # meanlat = np.mean([float(i[0]) for i in coordinates])
   # meanlon = np.mean([float(i[1]) for i in coordinates])
+  print('coordinates', len(coordinates))
 
   meanlat = np.mean(coordinates['latitude'])
   meanlon = np.mean(coordinates['longitude'])
@@ -112,19 +113,19 @@ def makeMarkerMap(coordinates):
   # add markers
   for i in range(len(coordinates)):
       # create popup on click
-      # html="""
-      # Rating: {}<br>
-      # Popularity: {}<br>
-      # Price: {}<br>
-      # """
-      # html = html.format(coordinates["rating"][i],\
-      #            coordinates["review_count"][i],\
-      #            coordinates["price"][i])
-      # iframe = folium.IFrame(html=html, width=100, height=10) #element yok
-      # popup = folium.Popup(iframe, max_width=2650)
+      html="""
+      Rating: {}<br>
+      Popularity: {}<br>
+      Price: {}<br>
+      """
+      html = html.format(coordinates["rating"][i],\
+                 coordinates["review_count"][i],\
+                 coordinates["price"][i])
+      iframe = folium.IFrame(html=html, width=100, height=10) #element yok
+      popup = folium.Popup(iframe, max_width=2650)
 
       #  add marker to map
-      folium.Marker(tuple([coordinates['latitude'][i],coordinates['longitude'][i]]), popup=None,).add_to(mapa)
+      folium.Marker(tuple([coordinates['latitude'][i],coordinates['longitude'][i]]), popup=popup,).add_to(mapa)
 
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumMarkers.html")
 
@@ -138,9 +139,20 @@ def makeClusterMap(coordinates):
   # initialize map
   mapa = folium.Map(location=[meanlat, meanlon],
                     tiles='Cartodb Positron', zoom_start=10)
+
+  coordinatesFinal = []
   for i in range(len(coordinates)):
   # add marker clusters
-    mapa.add_child(MarkerCluster(tuple([coordinates['latitude'][i],coordinates['longitude'][i]])))
+    coordinate = []
+    coordinate.append(coordinates["latitude"][i])
+    coordinate.append(coordinates["longitude"][i])
+    coordinatesFinal.append(coordinate)
+  # convert list of lists to list of tuples
+  coordinatesFinal = [tuple([i[0],i[1]]) for i in coordinatesFinal]
+
+  # print('coordinatesFinal', len(coordinatesFinal))
+
+  mapa.add_child(MarkerCluster(locations=coordinatesFinal))
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumCluster.html")
 
   #######################################
@@ -153,9 +165,26 @@ def makeHeatmapMap(coordinates):
   # initialize map
   mapa = folium.Map(location=[meanlat, meanlon],
                     tiles='Cartodb Positron', zoom_start=10)  #tiles='OpenStreetMap'
-  # for i in range(len(coordinates)):
+
+  coordinatesFinal = []
+  if len(coordinates) > 1090: #max len is 1090 for the Heat Map
+    for i in range(1090):
+      coordinate = []
+      coordinate.append(coordinates["latitude"][i])
+      coordinate.append(coordinates["longitude"][i])
+      coordinatesFinal.append(coordinate)
+  else:
+    for i in range(len(coordinates)):
+      coordinate = []
+      coordinate.append(coordinates["latitude"][i])
+      coordinate.append(coordinates["longitude"][i])
+      coordinatesFinal.append(coordinate)
+
+  # convert list of lists to list of tuples
+  coordinatesFinal = [tuple([i[0],i[1]]) for i in coordinatesFinal]
+
   # add heat
-  mapa.add_child(HeatMap(coordinates))
+  mapa.add_child(HeatMap(coordinatesFinal))
   # mapa.add_child(HeatMap((tuple([coordinates['latitude'][i],coordinates['longitude'][i]]))))
 
   return mapa.save("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/foliumHeatmap.html")
