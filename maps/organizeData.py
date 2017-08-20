@@ -19,7 +19,7 @@ def dataForFoliumMaps(mapParameters):
   price = str(mapParameters['price'])
   rating = float(mapParameters['rating'])
 
-  print('mapParameters', mapParameters)
+  # print('mapParameters', mapParameters)
 
   # if 'zipcode' in mapParameters.keys():
   #   zipcode = str(mapParameters['zipcode'])
@@ -35,36 +35,68 @@ def dataForFoliumMaps(mapParameters):
   WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%r''' % (business, price, rating, region)
 
 
+  # if region == 'Bay Area':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' ''' % (business, price, rating, 'San Francisco')
+  # elif region == 'Peninsula':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' AND city != '%s' AND city != '%s' ''' % (business, price, rating, 'San Francisco', 'San Francisco - Downtown', 'San Francisco - Outer')
+  # elif region == 'San Francisco':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = ?''' % (business, price, rating, 'San Francisco')
+  # elif region == 'Downtown SF':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Downtown')
+  # elif region == 'Outer SF':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Outer')
+  # elif region == 'East Bay':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'eastBay')
+  # elif region == 'North Bay':
+  #   sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
+  #     FROM CleanBusinessData
+  #     WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'northBay')
+
+
   if region == 'Bay Area':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' ''' % (business, price, rating, 'San Francisco')
+      WHERE query_category = '%s' AND city != '%s' ''' % (business, 'San Francisco')
   elif region == 'Peninsula':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city != '%s' AND city != '%s' AND city != '%s' ''' % (business, price, rating, 'San Francisco', 'San Francisco - Downtown', 'San Francisco - Outer')
+      WHERE query_category = '%s' AND city != '%s' AND city != '%s' AND city != '%s' ''' % (business, 'San Francisco', 'San Francisco - Downtown', 'San Francisco - Outer')
   elif region == 'San Francisco':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = ?''' % (business, price, rating, 'San Francisco')
+      WHERE query_category = '%s' AND city = ?''' % (business, 'San Francisco')
   elif region == 'Downtown SF':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Downtown')
+      WHERE query_category = '%s' AND city = '%s' ''' % (business, 'San Francisco - Downtown')
   elif region == 'Outer SF':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND city = '%s' ''' % (business, price, rating, 'San Francisco - Outer')
+      WHERE query_category = '%s' AND city = '%s' ''' % (business, 'San Francisco - Outer')
   elif region == 'East Bay':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'eastBay')
+      WHERE query_category = '%s' AND region = '%s' ''' % (business, 'eastBay')
   elif region == 'North Bay':
     sql = '''SELECT longitude, latitude, query_latitude, query_latitude, query_category, query_price, city, zipcode, price, rating, review_count, region
       FROM CleanBusinessData
-      WHERE query_category = '%s' AND price = '%s' AND rating = '%r' AND region = '%s' ''' % (business, price, rating, 'northBay')
+      WHERE query_category = '%s' AND region = '%s' ''' % (business, 'northBay')
+
 
   coordinatesForFoliumMaps = pd.read_sql_query(sql, conn)
+  print('coordinatesForFoliumMaps', len(coordinatesForFoliumMaps))
 
   # if len(coordinatesForFoliumMaps) <= 1860:
   for i in range(len(coordinatesForFoliumMaps)):
