@@ -121,7 +121,7 @@ def makeMarkerMap(coordinates):
       html = html.format(coordinates["rating"][i],\
                  coordinates["review_count"][i],\
                  coordinates["price"][i])
-      iframe = folium.IFrame(html=html, width=100, height=10) #element yok
+      iframe = folium.Div(html=html, width=150, height=100) #element yok
       popup = folium.Popup(iframe, max_width=2650)
 
       #  add marker to map
