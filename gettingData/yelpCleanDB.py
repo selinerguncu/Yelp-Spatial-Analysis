@@ -28,7 +28,7 @@ CREATE TABLE CleanBusinessData (
   longitude INTEGER,
   query_category TEXT,
   latitude INTEGER,
-  query_price TEXT,
+  query_price INTEGER,
   region TEXT
 )
 
