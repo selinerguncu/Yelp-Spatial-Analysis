@@ -15,7 +15,7 @@ def getCleanData():
 
   # verify that result of SQL query is stored in the dataframe
   # high = df[df['review_count']>500]['city']
-  print(type(data))
+  print(data.head())
 
   conn.close()
   return data
@@ -43,30 +43,24 @@ def distanceFromTheClosest(data):
         # sys.exit()
       # for row_id, row in enumerate(data.values):
         for i in regionalData.itertuples():
-          # print('i', i)
           if row != i:
             coordinate2 = (i[14], i[12])
             distance = great_circle(coordinate1, coordinate2).miles
             businessID = row[1]
-            price = i[15]
+            price = int(i[15])
             rating = i[2]
             # temp.extend([distance, businessID, price, rating])
             # distanceAllBusinesses.append(temp)
             distanceAllBusinesses.loc[len(distanceAllBusinesses)] = [distance, businessID, price, rating]
-            # for index, row in dataDistanceAdded.iterrows():
-            #   if row['id'] == business:
-            #     row['distance'] = distance
-            #     row['id'] = businessID
-            #     row['price'] = price
-            #     row['rating'] = rating
+            # print('i', distanceAllBusinesses)
+            # sys.exit()
 
-            # print(distanceAllBusinesses.head())
-  print(distanceAllBusinesses.head())
   # sys.exit()
 
   businesses = data['id'].unique()
-  for business in businesses:
+  for business in businesses[0:10]:
     closest2 = distanceAllBusinesses[distanceAllBusinesses['id'] == business].nsmallest(2, 'distance')
+    print(closest2.head())
     closest2Distance = closest2['distance'].mean()
     closest2Price = closest2['price'].mean()
     closest2Rating = closest2['rating'].mean()
@@ -96,7 +90,8 @@ def distanceFromTheClosest(data):
     temp = pd.DataFrame([[0,0,0,0,0,0,0,0,0,0,0,0]],
       index=distanceAllBusinesses.index, columns = columns)
 
-    dataDistanceAdded = distanceAllBusinesses.join(temp, how='outer')
+    dataDistanceAdded = data.join(temp, how='outer')
+    print(dataDistanceAdded.head())
 
     for index, row in dataDistanceAdded.iterrows():
       if row['id'] == business:
@@ -113,10 +108,11 @@ def distanceFromTheClosest(data):
         row['closest15Price'] = closest15Price
         row['closest15Rating'] = closest15Rating
 
-  print(dataDistanceAdded.head())
+        # row['query_price'] = int(row['query_price'])
+        # print(row)
+
   return dataDistanceAdded
 
-distanceFromTheClosest(getCleanData())
 
 def addCompetitionZipcode(data):
   # data['numberOfCompetitorsZipcode'] = 0
@@ -135,10 +131,10 @@ def addCompetitionZipcode(data):
   categories = data['query_category'].unique()
 
   for category in categories:
-    for zipcode in zipcodes:
+    for zipcode in zipcodes[0:1]:
       regionalData = dataCompetitionZipcodeAdded[(dataCompetitionZipcodeAdded['zipcode'] == zipcode) & (dataCompetitionZipcodeAdded['query_category'] == category)]
       numberOfCompetitorsZipcode = len(regionalData.index)
-      avgPriceZipcode = regionalData['price'].mean()
+      avgPriceZipcode = regionalData['query_price'].mean()
       avgRatingZipcode = regionalData['rating'].mean()
 
       for index, row in dataCompetitionZipcodeAdded.iterrows():
@@ -146,8 +142,58 @@ def addCompetitionZipcode(data):
           row['numberOfCompetitorsZipcode'] = numberOfCompetitorsZipcode
           row['avgPriceZipcode'] = avgPriceZipcode
           row['avgRatingZipcode'] = avgRatingZipcode
-
+        if row['numberOfCompetitorsZipcode'] != 0 and row['closest10Price'] != 0 and row['closest10Price'] != np.nan:
+          print(row)
   # data = dataCompetitionZipcodeAdded
-
+  print(dataCompetitionZipcodeAdded.head())
   return dataCompetitionZipcodeAdded
+# addCompetitionZipcode(distanceFromTheClosest(getCleanData()))
+# sys.exit()
 
+def addCompetitionCity(data):
+  columns = ['numberOfCompetitorsCity','avgPriceCity','avgRatingCity']
+
+  temp = pd.DataFrame([[0,0,0]], index=data.index, columns = columns)
+
+  dataCompetitionCityAdded = data.join(temp, how='outer')
+
+  cities = data['city'].unique()
+  categories = data['query_category'].unique()
+
+  for category in categories:
+    for city in cities[0:1]:
+      regionalData = dataCompetitionCityAdded[(dataCompetitionCityAdded['city'] == city) & (dataCompetitionCityAdded['query_category'] == category)]
+      numberOfCompetitorsCity = len(regionalData.index)
+      avgPriceCity = regionalData['query_price'].mean()
+      avgRatingCity = regionalData['rating'].mean()
+
+      for index, row in dataCompetitionCityAdded.iterrows():
+        if row['city'] == city and row['query_category'] == category:
+          row['numberOfCompetitorsCity'] = numberOfCompetitorsCity
+          row['avgPriceCity'] = avgPriceCity
+          row['avgRatingCity'] = avgRatingCity
+        if row['numberOfCompetitorsCity'] != 0 and row['numberOfCompetitorsCity'] != 0 and row['closest10Price'] != np.nan:
+          print(row)
+
+  # data = dataCompetitionCityAdded
+  print(dataCompetitionCityAdded.columns)
+  return dataCompetitionCityAdded
+
+addCompetitionCity(addCompetitionZipcode(distanceFromTheClosest(getCleanData())))
+
+
+# id  rating price        county
+# query_latitude  query_longitude  population          city  review_count
+# area                closest5Rating  closest10Distance closest10Price
+
+
+# Index(['id', 'rating', 'price', 'county', 'query_latitude', 'query_longitude',
+#        'population', 'city', 'review_count', 'area', 'zipcode', 'longitude',
+#        'query_category', 'latitude', 'query_price', 'region',
+#        'closest2Distance', 'closest2Price', 'closest2Rating',
+#        'closest5Distance', 'closest5Price', 'closest5Rating',
+#        'closest10Distance', 'closest10Price', 'closest10Rating',
+#        'closest15Distance', 'closest15Price', 'closest15Rating',
+#        'numberOfCompetitorsZipcode', 'avgPriceZipcode', 'avgRatingZipcode',
+#        'numberOfCompetitorsCity', 'avgPriceCity', 'avgRatingCity'],
+#       dtype='object')
