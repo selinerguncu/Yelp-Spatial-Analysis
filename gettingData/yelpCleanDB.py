@@ -97,20 +97,92 @@ CREATE TABLE DistanceSelectedBusinesses (
 
 CREATE TABLE CompetitionZipcode (
   zipcode TEXT,
+  category TEXT,
   numberOfCompetitorsZipcode INTEGER,
   avgPriceZipcode INTEGER,
   avgRatingZipcode INTEGER
 );
 
 
+CREATE TABLE DataCompetitionZipcodeAdded (
+  id TEXT,
+  rating INTEGER,
+  price TEXT,
+  county TEXT,
+  query_latitude INTEGER,
+  query_longitude INTEGER,
+  population INTEGER,
+  city TEXT,
+  review_count INTEGER,
+  area INTEGER,
+  zipcode TEXT,
+  longitude INTEGER,
+  category TEXT,
+  latitude INTEGER,
+  query_price INTEGER,
+  region TEXT,
+  closest2Distance INTEGER,
+  closest2Price INTEGER,
+  closest2Rating INTEGER,
+  closest5Distance INTEGER,
+  closest5Price INTEGER,
+  closest5Rating INTEGER,
+  closest10Distance INTEGER,
+  closest10Price INTEGER,
+  closest10Rating INTEGER,
+  closest15Distance INTEGER,
+  closest15Price INTEGER,
+  closest15Rating INTEGER,
+  numberOfCompetitorsZipcode INTEGER,
+  avgPriceZipcode INTEGER,
+  avgRatingZipcode INTEGER
+);
+
 
 CREATE TABLE CompetitionCity (
   city TEXT,
+  category TEXT,
   numberOfCompetitorsCity INTEGER,
   avgPriceCity INTEGER,
   avgRatingCity INTEGER
 );
 
+CREATE TABLE DataCompetitionCityAdded (
+  id TEXT,
+  rating INTEGER,
+  price TEXT,
+  county TEXT,
+  query_latitude INTEGER,
+  query_longitude INTEGER,
+  population INTEGER,
+  city TEXT,
+  review_count INTEGER,
+  area INTEGER,
+  zipcode TEXT,
+  longitude INTEGER,
+  category TEXT,
+  latitude INTEGER,
+  query_price INTEGER,
+  region TEXT,
+  closest2Distance INTEGER,
+  closest2Price INTEGER,
+  closest2Rating INTEGER,
+  closest5Distance INTEGER,
+  closest5Price INTEGER,
+  closest5Rating INTEGER,
+  closest10Distance INTEGER,
+  closest10Price INTEGER,
+  closest10Rating INTEGER,
+  closest15Distance INTEGER,
+  closest15Price INTEGER,
+  closest15Rating INTEGER,
+  numberOfCompetitorsZipcode INTEGER,
+  avgPriceZipcode INTEGER,
+  avgRatingZipcode INTEGER,
+  numberOfCompetitorsCity INTEGER,
+  avgPriceCity INTEGER,
+  avgRatingCity INTEGER
+);
 
 ''')
 
