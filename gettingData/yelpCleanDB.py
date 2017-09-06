@@ -43,9 +43,41 @@ CREATE TABLE CleanBusinessData (
 CREATE TABLE DistanceAllBusinesses (
   id TEXT,
   rating INTEGER,
-  price TEXT,
+  price INTEGER,
   distance INTEGER
 );
+
+CREATE TABLE DataDistanceAdded (
+  id TEXT,
+  rating INTEGER,
+  price TEXT,
+  county TEXT,
+  query_latitude INTEGER,
+  query_longitude INTEGER,
+  population INTEGER,
+  city TEXT,
+  review_count INTEGER,
+  area INTEGER,
+  zipcode TEXT,
+  longitude INTEGER,
+  category TEXT,
+  latitude INTEGER,
+  query_price INTEGER,
+  region TEXT,
+  closest2Distance INTEGER,
+  closest2Price INTEGER,
+  closest2Rating INTEGER,
+  closest5Distance INTEGER,
+  closest5Price INTEGER,
+  closest5Rating INTEGER,
+  closest10Distance INTEGER,
+  closest10Price INTEGER,
+  closest10Rating INTEGER,
+  closest15Distance INTEGER,
+  closest15Price INTEGER,
+  closest15Rating INTEGER
+);
+
 
 CREATE TABLE DistanceSelectedBusinesses (
   id TEXT,
