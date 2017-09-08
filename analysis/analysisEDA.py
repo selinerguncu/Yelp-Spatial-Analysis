@@ -9,6 +9,10 @@ from sklearn.neighbors import KernelDensity
 from scipy.stats import mode
 import json
 from json2html import *
+from scipy.stats import norm
+from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings('ignore')
 
 def ImportData():
   conn = sqlite.connect("/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/data/yelpCleanDB.sqlite")
@@ -24,6 +28,7 @@ def ImportData():
   data = data[data['city'] != 'San Francisco - Outer']
   print(len(data))
   return data
+
 
 def Stats(data):
   pd.options.display.float_format = '{:,.2f}'.format #display a pandas dataframe with a given format
@@ -66,8 +71,98 @@ def Stats(data):
 
   statsTable.index.set_levels(levels0, level=0, inplace=True)
   statsTable.index.set_levels(levels1, level=1, inplace=True)
+
+
   statsTable.to_csv('/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/plots/statsTable.csv')
   return statsTable
+
+
+def MissingDataCheck(data):
+  total = data.isnull().sum().sort_values(ascending=False) #number of missing data
+  percent = (data.isnull().sum()/data.isnull().count()).sort_values(ascending=False) #of missing data
+  missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+  print(missing_data.head(20))
+
+  # dealing with missing data:
+  #drop the ones with no competition variable
+  data = data.drop((missing_data[missing_data['Total'] == 254]).index,1)
+  # we can drop the ones with missing lattitude/longitude
+  # data = data.drop(data.loc[data['longitude'].isnull()].index)
+  # data.isnull().sum().max() #just checking
+  return data
+
+
+def OutlierCheck(data):
+  #standardizing data to check outliers:
+  # closest2DistanceScaled = StandardScaler().fit_transform(data['closest2Distance'].dropna()[:,np.newaxis]);
+  # lowRange = closest2DistanceScaled[closest2DistanceScaled[:,0].argsort()][:10]
+  # highRange= closest2DistanceScaled[closest2DistanceScaled[:,0].argsort()][-50:]
+
+  # closest5DistanceScaled = StandardScaler().fit_transform(data['closest5Distance'].dropna()[:,np.newaxis]);
+  # lowRange = closest5DistanceScaled[closest5DistanceScaled[:,0].argsort()][:10]
+  # highRange= closest5DistanceScaled[closest5DistanceScaled[:,0].argsort()][-50:]
+  # print('outer range (low) of the distribution:')
+  # print(lowRange)
+  # print('\nouter range (high) of the distribution:')
+  # print(highRange)
+
+  #bivariate analysis rating/distance
+  # var = 'closest2Distance'
+  # data = pd.concat([data['rating'], data[var]], axis=1)
+  # data.plot.scatter(x=var, y='rating', xlim=(0,50), ylim=(0.5,5.5)) #detected 3 outliers that does not follow the crowd
+
+  # #deleting 3 points: rating 1,15,2 & 10< distance <20
+  toBeDeleted = data.sort_values(by = 'closest2Distance', ascending = False)[:35]
+  print(toBeDeleted[['closest2Distance', 'rating']])
+  data = data.drop(data[data['id'] == 7893].index)
+  data = data.drop(data[data['id'] == 3480].index)
+  data = data.drop(data[data['id'] == 10569].index)
+
+  # can do this bivariate analysis with other distance variables as well but checked and saw values are consistent
+  plt.show()
+
+
+def NormalityCheck(data):
+  res = stats.probplot(data['rating'], plot=plt)
+  res = stats.probplot(data['query_price'], plot=plt)
+  plt.show()
+
+    # THIS WORKS JUST FINE:
+  # sns.distplot(data['query_price'], bins=4, kde_kws={'bw': .4})
+  # plt.show()
+
+  # #skewness and kurtosis
+  # print("Skewness: %f" % data['query_price'].skew())
+  # print("Kurtosis: %f" % data['query_price'].kurt())
+
+
+def ScatterPlots(data):
+  #scatter plot closest2Distance/saleprice
+  var = 'closest2Distance'
+  data = pd.concat([data['rating'], data[var]], axis=1)
+  data.plot.scatter(x=var, y='rating', xlim=(0,50), ylim=(0.5,5.5))
+
+  #scatter plot closest5Distance/rating
+  var = 'closest5Distance'
+  data = pd.concat([data['rating'], data[var]], axis=1)
+  data.plot.scatter(x=var, y='rating', xlim=(0,50), ylim=(0.5,5.5))
+
+  # Relationship with categorical features
+
+  #box plot rating/price
+  var = 'query_price'
+  data = pd.concat([data['rating'], data[var]], axis=1)
+  f, ax = plt.subplots(figsize=(8, 6))
+  fig = sns.boxplot(x=var, y="rating", data=data)
+  fig.axis(ymin=0, ymax=5.5)
+
+  # Scatter plots between 'rating' and correlated variables
+
+  #scatterplot
+  sns.set()
+  cols = ['rating', 'query_price', 'closest2Distance', 'closest5Distance', 'closest10Distance', 'closest15Distance']
+  sns.pairplot(data[cols], size = 2.5)
+  plt.show()
 
 
 def CategoryHeatmaps(data):
@@ -115,6 +210,20 @@ def CategoryHeatmaps(data):
   plt.savefig('/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/Yelp/yelp/static/plots/categoryheatmaps.png', dpi=200)
   plt.show()
 
+  #correlation matrix
+  corrmat = data.corr()
+  f, ax = plt.subplots(figsize=(12, 9))
+  sns.heatmap(corrmat, vmax=.8, square=True);
+
+  # SalePrice' correlation matrix (zoomed heatmap style)
+  #saleprice correlation matrix
+  k = 10 #number of variables for heatmap
+  cols = corrmat.nlargest(k, 'SalePrice')['SalePrice'].index
+  cm = np.corrcoef(data[cols].values.T)
+  sns.set(font_scale=1.25)
+  hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
+  plt.show()
+
 
 def Histograms(data):
   # fig3 = plt.figure(figsize=(10,10))
@@ -155,12 +264,12 @@ def Histograms(data):
   binsRating = np.linspace(1, 5, num = 10)
   x_gridPrice = np.linspace(0, 5, 100)
   x_gridRating = np.linspace(0, 6, 100)
+
   plt.subplot(2, 2, 1)
   plt.hist(dataPriceByCategory, alpha=0.7, bins=binsPrice,
     label=['Restaurants', 'Bars', 'Coffee & Tea', 'Beauty & Spas', 'Giftshops'], histtype = "bar")
   plt.title('Price by Category')
   plt.legend(loc='upper right')
-
 
   plt.subplot(2, 2, 2)
   plt.plot(x_gridPrice, kde_sklearn(data['query_price'], x_gridPrice, bandwidth=0.4),
@@ -180,7 +289,6 @@ def Histograms(data):
   # ax[row, col].text(.5,1.3, title, weight='heavy', horizontalalignment='center', fontsize=13, transform=ax[row, col].transAxes)
   plt.axvline(mode, label='Mode:{:2.1f}'.format(mode), color='g', linestyle='-.', linewidth=1) #label='Mode:{:2.1f}'.format(mode)
   plt.legend(loc='upper right')
-
 
   plt.subplot(2, 2, 3)
   plt.hist(dataRatingByCategory, alpha=0.7, bins=binsRating,
@@ -216,7 +324,6 @@ def Histograms(data):
   # plt, ax = plt.subplots(figsize=(8,6))
   # ax.hist(x, normed=True, bins=bins, alpha=0.3)
   # ax.plot(xx, kde(xx))
-
 
   cols = [0,0,1,1,2,2]
   rows = [0,1,0,1,0,1]
@@ -463,16 +570,33 @@ def KDEs(data):
 
 
 
+
 data = ImportData()
 # Stats(data)
 # CategoryHeatmaps(data)
-Histograms(data)
-# JointPlots(data)
-# Correlations(data)
-# KDEs(data)
+# Histograms(data)
+# # JointPlots(data)
+# # Correlations(data)
+# # KDEs(data)
+
+# MissingDataCheck(data)
+# OutlierCheck(data)
+NormalityCheck(data)
+# ScatterPlots(data)
+
+# df2.plot.box()
+# data1 = pd.DataFrame()
+# dataByCategory = data.groupby('category')
+# data1['x'] = [1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9,1,1,1,2,3,4,5,6,7,8,9]
+
+# df2['a'].plot.kde()
+# sns.distplot(data['rating'], fit=norm);
+# fig = plt.figure()
+
+
+
 
 #8 plots -- number 5 might be unnecessary
-
 
     # ax.text(3, 8, 'boxed italics text in data coords', style='italic',
     #     bbox={'facecolor':'red', 'alpha':0.5, 'pad':10})
